@@ -11,29 +11,36 @@
   kept-old-versions 5
   delete-old-versions t)
 
-
 ;; basic editing
 (setq kill-whole-line t
       tab-width 4
       auto-fill-mode t          ;; always turn on auto-fill mode
       delete-selection-mode 1   ;; delete the sel with a keyp
-      require-final-newline t)  ;; end files with a newline
+      require-final-newline t   ;; end files with a newline
+      case-fold-search t)       ;; ignore case when search interactively in lower case
+
 (set-fill-column 92)            ;; wrap lines after column 92
 
 ;; setup info bars and look&feel
 (setq display-time-24hr-format t)
 (display-time)
 (setq tool-bar-mode -1            ;; turn-off toolbar 
-      inhibit-startup-screen t)   ;; turn-off welcome screen
+      inhibit-startup-screen t   ;; turn-off welcome screen
+      column-number-mode t
+      size-indication-mode t)
+
 ;; colors and themes
+;; use dark gray for comments 
 (set-face-foreground font-lock-comment-face "dimgray")
+ ;; max decoration for all modes, rarely affect anything
+(setq font-lock-maximum-decoration t) 
 
 ;; useful keyboard shortcuts
 (global-set-key "\M-\C-r" 'query-replace)
 (global-set-key "\M-r" 'replace-string)
 (global-set-key "\M-g" 'goto-line)
 (global-set-key "\C-ca" 'org-agenda)
-;; Treat 'y' or <CR> as yes, 'n' as no.
+;; Treat 'y' or 'RET' as yes, 'n' as no.
 (fset 'yes-or-no-p 'y-or-n-p)
 (define-key query-replace-map [return] 'act)
 
@@ -47,8 +54,6 @@
 ;;  '(c-style-variables-are-local-p nil)
 ;;  '(c-syntactic-indentation t)
 ;;  '(c-tab-always-indent nil)
-;;  '(case-fold-search t)
-;;  '(column-number-mode t)
 ;;  '(cperl-continued-statement-offset 4)
 ;;  '(cperl-indent-level 4)
 ;;  '(current-language-environment "UTF-8")
@@ -78,21 +83,9 @@
 ;;  '(winsav-save-mode t)
 ;;  '(x-select-enable-clipboard t))
 
-;; (custom-set-faces
-;;   ;; custom-set-faces was added by Custom.
-;;   ;; If you edit it by hand, you could mess it up, so be careful.
-;;   ;; Your init file should contain only one such instance.
-;;   ;; If there is more than one, they won't work right.
-;;  '(default ((t (:inherit nil :stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 100 :width normal :foundry "unknown" :family "DejaVu Sans Mono"))))
-
-;;  '(font-lock-keyword-face ((((class color) (min-colors 8)) (:foreground "orange")))))
-
 
 ;; 
-
-
-;; (setq font-lock-maximum-decoration t)
-;; (size-indication-mode t)
+;; 
 ;; ;
 ;; (add-hook 'c-mode-hook 'turn-on-font-lock)
 ;; (setq shift-select-mode nil)
