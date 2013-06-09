@@ -2,7 +2,7 @@
 ;; keep all custom code under ~/.emacs.d/elisp
 (setq load-path (cons (concat (concat "/home/" user-login-name) "/.emacs.d/elisp") load-path))
 
-;; backups
+;; backups & auto-save
 (setq make-backup-files t ;; do make backups
       backup-by-copying t     ;; and copy them here
       backup-directory-alist '(("." . "~/.emacs.d/cache/backups")) 
@@ -10,14 +10,15 @@
       kept-new-versions 2
       kept-old-versions 5
       delete-old-versions t)
+(setq auto-save-list-file-prefix "~/.emacs.d/cache/auto-save-list/.saves-")
 
 ;; persistence
 ;; open files, positions, history
 (require 'desktop)
 (setq desctop-enable t
       desktop-save-mode 1
-      desktop-path '("~/.emacs.d/")
-      desktop-dirname "~/.emacs.d/"
+      desktop-path '("~/.emacs.d/cache/")
+      desktop-dirname "~/.emacs.d/cache/"
       desktop-base-file-name "emacs-desktop"
       history-length 256)
 (setq desktop-globals-to-save (quote (tags-file-name tags-table-list search-ring regexp-search-ring
@@ -26,11 +27,9 @@ file-name-history)))
 (require 'revive)
 (autoload 'save-current-configuration "revive" "Save status" t)
 (autoload 'resume "revive" "Resume Emacs" t)
-(setq revive:configuration-file (expand-file-name "emacs-revive" "~/.emacs.d/"))
-(defun revive-save ()  (save-current-configuration 1))
-(defun revive-load ()  (resume 1))
-(add-hook 'kill-emacs-hook  'revive-save)
-(add-hook 'after-init-hook  'revive-load)
+(setq revive:configuration-file (expand-file-name "emacs-revive" "~/.emacs.d/cache/"))
+(add-hook 'kill-emacs-hook  (lambda() (save-current-configuration 1)))
+(add-hook 'after-init-hook  (lambda() (resume 1)))
 
 ;; general settings
 ;; transient-mark-mode changes many command to use only selected region when mark active
@@ -58,17 +57,29 @@ file-name-history)))
 ;; use dark gray for comments 
 (set-face-foreground font-lock-comment-face "dimgray")
  ;; max decoration for all modes, rarely affect anything
-(setq font-lock-maximum-decoration t) 
+(setq font-lock-maximum-decoration t)
+;; show fill-column - http://www.emacswiki.org/emacs/download/fill-column-indicator.el
+(require 'fill-column-indicator)
+;(defun my-auto-fill-mode (&optional arg) (auto-fill-mode arg) (fci-mode arg))
+;(defun my-auto-fill-mode() (auto-fill-mode) (fci-mode))
 
 ;; useful keyboard shortcuts
 (global-set-key "\M-\C-r" 'query-replace)
 (global-set-key "\M-r" 'replace-string)
 (global-set-key "\M-g" 'goto-line)
-(global-set-key "\C-ca" 'org-agenda)
-(global-set-key (kbd "C-c q") 'auto-fill-mode)
+(global-set-key (kbd "C-c M-q") 'auto-fill-mode) ;; TODO - change to my-auto-fill-mode
 ;; Treat 'y' or 'RET' as yes, 'n' as no.
 (fset 'yes-or-no-p 'y-or-n-p)
 (define-key query-replace-map [return] 'act)
+
+
+;; Lang/mode specific settings
+
+;; Org mode
+(global-set-key (kbd "C-c a") 'org-agenda)
+(setq org-hierarchical-todo-statistics t)
+(setq org-agenda-files (quote ("~/notes/notes.org"))))
+
 
 ;; (custom-set-variables
 ;;   ;; custom-set-variables was added by Custom.
@@ -94,8 +105,6 @@ file-name-history)))
 ;;  '(normal-erase-is-backspace t)
 ;;  '(octave-auto-indent nil)
 ;;  '(octave-block-offset 4)
-;;  '(org-agenda-files (quote ("~/notes/notes.org")))
-;;  '(org-support-shift-select t)
 ;;  '(parse-sexp-ignore-comments t)
 ;;  '(save-place t nil (saveplace))
 ;;  '(tab-always-indent nil)
@@ -150,8 +159,6 @@ file-name-history)))
 ;; ;(setq auto-mode-alist
 ;; ;      (append '(("\\.latex$"  . latex-mode)) auto-mode-alist ))
 
-;; ;; for ORG-mode
-;; (setq org-hierarchical-todo-statistics t)
 
 
 ; haskell setup
@@ -172,12 +179,12 @@ file-name-history)))
 ;(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
 ;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
 ;(add-hook 'haskell-mode-hook 'turn-on-haskell-hugs)
-(custom-set-variables
+;(custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(org-agenda-files (quote ("~/notes/notes.org"))))
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
