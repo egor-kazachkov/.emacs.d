@@ -4,31 +4,56 @@
 
 ;; backups
 (setq make-backup-files t ;; do make backups
-  backup-by-copying t     ;; and copy them here
-  backup-directory-alist '(("." . "~/.emacs.d/cache/backups")) 
-  version-control t
-  kept-new-versions 2
-  kept-old-versions 5
-  delete-old-versions t)
+      backup-by-copying t     ;; and copy them here
+      backup-directory-alist '(("." . "~/.emacs.d/cache/backups")) 
+      version-control t
+      kept-new-versions 2
+      kept-old-versions 5
+      delete-old-versions t)
+
+;; persistence
+;; open files, positions, history
+(require 'desktop)
+(setq desctop-enable t
+      desktop-save-mode 1
+      desktop-path '("~/.emacs.d/")
+      desktop-dirname "~/.emacs.d/"
+      desktop-base-file-name "emacs-desktop"
+      history-length 256)
+(setq desktop-globals-to-save (quote (tags-file-name tags-table-list search-ring regexp-search-ring
+file-name-history)))
+;; window geometry http://www.gentei.org/~yuuji/software/revive.el
+(require 'revive)
+(autoload 'save-current-configuration "revive" "Save status" t)
+(autoload 'resume "revive" "Resume Emacs" t)
+(setq revive:configuration-file (expand-file-name "emacs-revive" "~/.emacs.d/"))
+(defun revive-save ()  (save-current-configuration 1))
+(defun revive-load ()  (resume 1))
+(add-hook 'kill-emacs-hook  'revive-save)
+(add-hook 'after-init-hook  'revive-load)
+
+;; general settings
+;; transient-mark-mode changes many command to use only selected region when mark active
+(setq transient-mark-mode t)    
 
 ;; basic editing
 (setq kill-whole-line t
       tab-width 4
+      fill-column 92            ;; wrap lines after column 92
       auto-fill-mode t          ;; always turn on auto-fill mode
       delete-selection-mode 1   ;; delete the sel with a keyp
       require-final-newline t   ;; end files with a newline
-      case-fold-search t)       ;; ignore case when search interactively in lower case
+      case-fold-search t        ;; ignore case when search interactively in lower case
+      shift-select-mode nil)    ;; disable shift+arrow select (as these keys needed by windmove/org mode)
 
-(set-fill-column 92)            ;; wrap lines after column 92
-
-;; setup info bars and look&feel
+;; setup look&feel
+;; use -mm switch to start Emacs in fullscreen mode
 (setq display-time-24hr-format t)
 (display-time)
-(setq tool-bar-mode -1            ;; turn-off toolbar 
-      inhibit-startup-screen t   ;; turn-off welcome screen
+(tool-bar-mode -1)            ;; turn-off toolbar 
+(setq inhibit-startup-screen t   ;; turn-off welcome screen
       column-number-mode t
       size-indication-mode t)
-
 ;; colors and themes
 ;; use dark gray for comments 
 (set-face-foreground font-lock-comment-face "dimgray")
@@ -40,6 +65,7 @@
 (global-set-key "\M-r" 'replace-string)
 (global-set-key "\M-g" 'goto-line)
 (global-set-key "\C-ca" 'org-agenda)
+(global-set-key (kbd "C-c q") 'auto-fill-mode)
 ;; Treat 'y' or 'RET' as yes, 'n' as no.
 (fset 'yes-or-no-p 'y-or-n-p)
 (define-key query-replace-map [return] 'act)
@@ -58,9 +84,6 @@
 ;;  '(cperl-indent-level 4)
 ;;  '(current-language-environment "UTF-8")
 ;;  '(custom-buffer-indent 4)
-;;  '(desktop-globals-to-save (quote (desktop-missing-file-warning tags-file-name tags-table-list search-ring regexp-search-ring register-alist file-name-history)))
-;;  '(desktop-restore-eager 4)
-;;  '(desktop-save-mode t)
 ;;  '(fill-individual-varying-indent t)
 ;;  '(global-font-lock-mode t nil (font-lock))
 ;;  '(hi-lock-mode t t (hi-lock))
@@ -78,9 +101,7 @@
 ;;  '(tab-always-indent nil)
 ;;  '(tab-stop-list (quote (4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80 84 88 92 96 100)))
 ;;  '
-;;  '(transient-mark-mode t)
-;;  '(winsav-handle-also-desktop nil)
-;;  '(winsav-save-mode t)
+
 ;;  '(x-select-enable-clipboard t))
 
 
@@ -111,7 +132,7 @@
 ;; (add-hook 'org-shiftdown-final-hook 'windmove-down)
 ;; (add-hook 'org-shiftright-final-hook 'windmove-right)
 
-;; (require 'winsav)
+;; 
 
 
 ;; ; -- language specs --
@@ -151,3 +172,15 @@
 ;(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
 ;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
 ;(add-hook 'haskell-mode-hook 'turn-on-haskell-hugs)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(org-agenda-files (quote ("~/notes/notes.org"))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
