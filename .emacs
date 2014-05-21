@@ -33,12 +33,12 @@ file-name-history)))
 
 ;; general settings
 ;; transient-mark-mode changes many command to use only selected region when mark active
-(setq transient-mark-mode t)    
+(setq transient-mark-mode t)
 
 ;; basic editing
 (setq kill-whole-line t
       tab-width 4
-      fill-column 92            ;; wrap lines after column 92
+      fill-column 92            ;; wrap lines after column 92 ;; TODO: Doesn't work - fix it
       auto-fill-mode t          ;; always turn on auto-fill mode
       delete-selection-mode 1   ;; delete the sel with a keyp
       require-final-newline t   ;; end files with a newline
@@ -54,12 +54,20 @@ file-name-history)))
       column-number-mode t
       size-indication-mode t)
 ;; colors and themes
-;; use dark gray for comments 
-(set-face-foreground font-lock-comment-face "dimgray")
+;; Use Ubuntu Mono Regular 12 as default font
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:family "Ubuntu Mono" :foundry "unknown" :slant normal :weight normal :height 120 :width normal)))))
+;; use dark gray italic for comments 
+(set-face-attribute font-lock-comment-face nil :slant 'italic :foreground "dimgray")
  ;; max decoration for all modes, rarely affect anything
 (setq font-lock-maximum-decoration t)
 ;; show fill-column - http://www.emacswiki.org/emacs/download/fill-column-indicator.el
 (require 'fill-column-indicator)
+; TODO add fill-column 92
 ;(defun my-auto-fill-mode (&optional arg) (auto-fill-mode arg) (fci-mode arg))
 ;(defun my-auto-fill-mode() (auto-fill-mode) (fci-mode))
 
@@ -72,25 +80,40 @@ file-name-history)))
 (fset 'yes-or-no-p 'y-or-n-p)
 (define-key query-replace-map [return] 'act)
 
+(global-set-key   [f1]   'other-window)
+
+
 
 ;; Lang/mode specific settings
 
 ;; Org mode
 (global-set-key (kbd "C-c a") 'org-agenda)
 (setq org-hierarchical-todo-statistics t)
-(setq org-agenda-files (quote ("~/notes/notes.org"))))
+(setq org-agenda-files (quote ("~/notes/notes.org")))
+(add-hook 'org-mode-hook 'auto-fill-mode) ; TODO replace with my-auto-fill-mode
+(add-hook 'org-mode-hook 'fci-mode)
 
+
+;; Julia mode
+(require 'julia-mode)
+;;(setq auto-mode-alist (append '(("\\.jl$"  . julia-mode)) auto-mode-alist ))
+
+
+;; C/C++ mode
+(setq c-basic-offset 4 ;; set default tab offset to 4 to all C-realted modes
+      c-default-style (quote ((c-mode . "stroustrup") 
+			      (c++-mode . "stroustrup") 
+			      (other . "stroustrup")))
+      c-style-variables-are-local-p nil ;; make c-style related variables global
+      c-syntactic-indentation t)
+
+;;  '(c-tab-always-indent nil)
 
 ;; (custom-set-variables
 ;;   ;; custom-set-variables was added by Custom.
 ;;   ;; If you edit it by hand, you could mess it up, so be careful.
 ;;   ;; Your init file should contain only one such instance.
 ;;   ;; If there is more than one, they won't work right.
-;;  '(c-basic-offset 4)
-;;  '(c-default-style (quote ((c-mode . "stroustrup") (c++-mode . "stroustrup") (other . "stroustrup"))))
-;;  '(c-style-variables-are-local-p nil)
-;;  '(c-syntactic-indentation t)
-;;  '(c-tab-always-indent nil)
 ;;  '(cperl-continued-statement-offset 4)
 ;;  '(cperl-indent-level 4)
 ;;  '(current-language-environment "UTF-8")
@@ -129,7 +152,6 @@ file-name-history)))
 ;; ; enabled 'dangerous' commands
 ;; (put 'upcase-region 'disabled nil)
 ;; (put 'downcase-region 'disabled nil)
-;; (put 'dired-find-alternate-file 'disabled nil)
 
 ;; ; packages setup
 ;; (require 'org-inlinetask)
@@ -179,15 +201,13 @@ file-name-history)))
 ;(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
 ;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
 ;(add-hook 'haskell-mode-hook 'turn-on-haskell-hugs)
-;(custom-set-variables
+(custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
-
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+ '(column-number-mode t)
+ '(display-time-mode t)
+ '(size-indication-mode t)
+ '(tool-bar-mode nil))
+(put 'dired-find-alternate-file 'disabled nil)
