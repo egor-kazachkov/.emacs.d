@@ -45,7 +45,6 @@ want to keep this how-to for future reference so I put it into README and also a
 
   touch .gitignore
   touch README
-  mkdir -p cache/backups
   echo "cache/*" >.gitignore
   git add .gitignore README
   git commit -m "added .gitignore README"

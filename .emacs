@@ -1,39 +1,47 @@
 ;; paths
+;; On Win7 "~" == "C:\Users\<username>\AppData\Roaming"
+(defvar emacs-d-path (expand-file-name ".emacs.d" "~"))
+
 ;; keep all custom code under ~/.emacs.d/elisp
-(setq load-path (cons (concat (concat "/home/" user-login-name) "/.emacs.d/elisp") load-path))
+(setq load-path (cons (expand-file-name "elisp" emacs-d-path) load-path))
+
+(defvar cache-path (expand-file-name "cache" emacs-d-path))
+(unless (file-exists-p cache-path) (make-directory cache-path))
 
 ;; backups & auto-save
+(defvar backups-path (expand-file-name  "backups" cache-path))
+(unless (file-exists-p backups-path) (make-directory backups-path))
+(add-to-list 'backup-directory-alist (cons "." backups-path))
 (setq make-backup-files t ;; do make backups
       backup-by-copying t     ;; and copy them here
-      backup-directory-alist '(("." . "~/.emacs.d/cache/backups")) 
       version-control t
       kept-new-versions 2
       kept-old-versions 5
       delete-old-versions t)
-(setq auto-save-list-file-prefix "~/.emacs.d/cache/auto-save-list/.saves-")
+(setq auto-save-list-file-prefix (expand-file-name ".saves-" (expand-file-name "auto-save-list" cache-path)))
 
 ;; persistence
 ;; open files, positions, history
 (require 'desktop)
-(setq desctop-enable t
+(setq desktop-enable t
       desktop-save-mode 1
-      desktop-path '("~/.emacs.d/cache/")
-      desktop-dirname "~/.emacs.d/cache/"
       desktop-base-file-name "emacs-desktop"
+      desktop-dirname cache-path
+      desktop-path (cons cache-path nil)
       history-length 256)
-(setq desktop-globals-to-save (quote (tags-file-name tags-table-list search-ring regexp-search-ring
-file-name-history)))
+(setq desktop-globals-to-save (quote (tags-file-name tags-table-list search-ring
+   regexp-search-ring file-name-history)))
 ;; window geometry http://www.gentei.org/~yuuji/software/revive.el
 (require 'revive)
 (autoload 'save-current-configuration "revive" "Save status" t)
 (autoload 'resume "revive" "Resume Emacs" t)
-(setq revive:configuration-file (expand-file-name "emacs-revive" "~/.emacs.d/cache/"))
+(setq revive:configuration-file (expand-file-name "emacs-revive" cache-path))
 (add-hook 'kill-emacs-hook  (lambda() (save-current-configuration 1)))
 (add-hook 'after-init-hook  (lambda() (resume 1)))
 
 ;; general settings
 ;; transient-mark-mode changes many command to use only selected region when mark active
-(setq transient-mark-mode t)    
+(setq transient-mark-mode t)
 
 ;; basic editing
 (setq kill-whole-line t
@@ -78,7 +86,7 @@ file-name-history)))
 ;; Org mode
 (global-set-key (kbd "C-c a") 'org-agenda)
 (setq org-hierarchical-todo-statistics t)
-(setq org-agenda-files (quote ("~/notes/notes.org"))))
+(setq org-agenda-files (quote ("~/notes/notes.org")))
 
 
 ;; (custom-set-variables
