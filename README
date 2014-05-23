@@ -1,27 +1,35 @@
 Emacs as IDE. How to install custom Emacs and set it up as IDE.
+Notes for self-use.
 
-Get latest version from http://ftp.gnu.org/gnu/emacs/ (Currently it is 24.3)
+Get latest version from http://ftp.gnu.org/gnu/emacs/ 
+Currently it is 24.3
 
+For Linux:
   cd /opt/src
   wget http://ftp.gnu.org/gnu/emacs/emacs-24.3.tar.gz
   tar xzf emacs-24.3.tar.gz 
   rm *tar.gz
   cd emacs-24.3
 
-Configure options that are omitted but may be important: --enable-locallisppath=PATH
-(because I intend to keep all lisp code in home dir); bunch of options related to e-mail
-retreival (I don't use emacs as e-mail client for now). Most other options are enabled by
-default - I disabled only gif support. I also installed libxpm-dev needed for Xpm
-support. You may need other developers packages if you don't have them installed.
+Configure options that are omitted but may be important:
+--enable-locallisppath=PATH (because I intend to keep all lisp code
+in home dir); bunch of options related to e-mail retreival (I don't
+use emacs as e-mail client for now). Most other options are enabled by
+default - I disabled only gif support. I also installed libxpm-dev
+needed for Xpm support. You may need other developers packages if you
+don't have them installed. 
 
   sudo apt-get install libxpm-dev
   ./configure --prefix=/opt --with-x-toolkit=gtk2 --with-x --with-gif=no
   make
   make install
 
-Now lets setup Emacs from scratch. First of all I want to keep all emacs-related stuff in
-one place and under version control. Lets it be ~/.emacs.d directory. For version control I
-will use github.com (every self-respecting emacser should have his .emacs on github!) So
+For Windows: just install binary package
+
+Now lets setup Emacs from scratch. First of all I want to keep all 
+emacs-related stuff in one place and under version control. Lets it
+be ~/.emacs.d directory. For version control I will use github.com
+(every self-respecting emacser should have his .emacs on github!) So
 create .emacs.d repo on github and then:
 
   cd ~
@@ -29,8 +37,9 @@ create .emacs.d repo on github and then:
   touch .emacs.d/.emacs
   ln -s .emacs.d/.emacs .emacs
 
-We need symbol link .emacs in home dir so Emacs could find it on startup. But real .emacs
-config will be kept under .emacs.d so we could version control it too.
+We need symbol link .emacs in home dir so Emacs could find it on
+startup. But real .emacs config will be kept under .emacs.d so we
+could version control it too. 
 
   cd .emacs.d
   git init
@@ -39,9 +48,11 @@ config will be kept under .emacs.d so we could version control it too.
   git remote add origin https://github.com/egor-kazachkov/.emacs.d.git
   git push -u origin master
 
-Beside stuff which is worth to put in git, .emacs.d will keep different files not worth it:
-backup saves, history, file positions, etc. So we want to add them to .gitignore. Also I
-want to keep this how-to for future reference so I put it into README and also add it to git.
+Beside stuff which is worth to put in git, .emacs.d will keep
+different files not worth it: backup saves, history, file positions,
+etc. So we want to add them to .gitignore. Also I want to keep this
+how-to for future reference so I put it into README and also add it to
+git. 
 
   touch .gitignore
   touch README
