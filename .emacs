@@ -61,14 +61,27 @@
 (setq inhibit-startup-screen t   ;; turn-off welcome screen
       column-number-mode t
       size-indication-mode t)
+
 ;; colors and themes
-;; Use Ubuntu Mono Regular 12 as default font
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((t (:family "Ubuntu Mono" :foundry "unknown" :slant normal :weight normal :height 120 :width normal)))))
+;; Use Ubuntu Mono Regular 12 as default font for Linux (Ubuntu) and Courier for Windows
+;; Need tuning for other systems
+(if (eq system-type 'gnu/linux)
+    (custom-set-faces
+     ;; custom-set-faces was added by Custom.
+     ;; If you edit it by hand, you could mess it up, so be careful.
+     ;; Your init file should contain only one such instance.
+     ;; If there is more than one, they won't work right.
+     '(default ((t (:family "Ubuntu Mono" :foundry "unknown" :slant normal :weight normal :height 120 :width normal))))))
+(if (eq system-type 'windows-nt)
+    (custom-set-faces
+     ;; custom-set-faces was added by Custom.
+     ;; If you edit it by hand, you could mess it up, so be careful.
+     ;; Your init file should contain only one such instance.
+     ;; If there is more than one, they won't work right.
+     '(default ((t (:family "Courier New" :foundry "outline" :slant normal :weight normal :height 120 :width normal))))))
+
+
+
 ;; use dark gray italic for comments 
 (set-face-attribute font-lock-comment-face nil :slant 'italic :foreground "dimgray")
  ;; max decoration for all modes, rarely affect anything
@@ -87,7 +100,7 @@
 ;; Treat 'y' or 'RET' as yes, 'n' as no.
 (fset 'yes-or-no-p 'y-or-n-p)
 (define-key query-replace-map [return] 'act)
-
+;; Since windmove doesn't work well with org-mode, define easy button for window switch.
 (global-set-key   [f1]   'other-window)
 
 
@@ -106,7 +119,6 @@
 (require 'julia-mode)
 ;;(setq auto-mode-alist (append '(("\\.jl$"  . julia-mode)) auto-mode-alist ))
 
-
 ;; C/C++ mode
 (setq c-basic-offset 4 ;; set default tab offset to 4 to all C-realted modes
       c-default-style (quote ((c-mode . "stroustrup") 
@@ -114,8 +126,42 @@
 			      (other . "stroustrup")))
       c-style-variables-are-local-p nil ;; make c-style related variables global
       c-syntactic-indentation t)
-
 ;;  '(c-tab-always-indent nil)
+
+
+;; Git extensions for vc-git, from http://snarfed.org/emacs-vc-git-tweaks
+;; In vc-git and vc-dir for git buffers, 
+;; make (C-x v) a run git add, u run git
+;; reset, and r run git reset and checkout from head.
+(defun my-vc-git-command (verb fn)
+  (let* ((fileset-arg (or vc-fileset (vc-deduce-fileset nil t)))
+         (backend (car fileset-arg))
+         (files (nth 1 fileset-arg)))
+    (if (eq backend 'Git)
+        (progn (funcall fn files)
+               (message (concat verb " " (number-to-string (length files))
+                                " file(s).")))
+      (message "Not in a vc git buffer."))))
+
+(defun my-vc-git-add (&optional revision vc-fileset comment)
+  (interactive "P")
+  (my-vc-git-command "Staged" 'vc-git-register))
+
+(defun my-vc-git-reset (&optional revision vc-fileset comment)
+  (interactive "P")
+  (my-vc-git-command "Unstaged"
+    (lambda (files) (vc-git-command nil 0 files "reset" "-q" "--"))))
+
+(define-key vc-prefix-map [(r)] 'vc-revert-buffer)
+(define-key vc-dir-mode-map [(r)] 'vc-revert-buffer)
+(define-key vc-prefix-map [(a)] 'my-vc-git-add)
+(define-key vc-dir-mode-map [(a)] 'my-vc-git-add)
+(define-key vc-prefix-map [(u)] 'my-vc-git-reset)
+(define-key vc-dir-mode-map [(u)] 'my-vc-git-reset)
+;; hide up to date files after refreshing in vc-dir
+(define-key vc-dir-mode-map [(g)]
+  (lambda () (interactive) (vc-dir-refresh) (vc-dir-hide-up-to-date)))
+
 
 ;; (custom-set-variables
 ;;   ;; custom-set-variables was added by Custom.
