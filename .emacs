@@ -147,6 +147,8 @@
 ;; In vc-git and vc-dir for git buffers, 
 ;; make (C-x v) a run git add, u run git
 ;; reset, and r run git reset and checkout from head.
+(require 'vc-dir)
+
 (defun my-vc-git-command (verb fn)
   (let* ((fileset-arg (or vc-fileset (vc-deduce-fileset nil t)))
          (backend (car fileset-arg))
@@ -168,14 +170,14 @@
 
 
 (define-key vc-prefix-map [(r)] 'vc-revert-buffer)
-;;(define-key vc-dir-mode-map [(r)] 'vc-revert-buffer)
+(define-key vc-dir-mode-map [(r)] 'vc-revert-buffer)
 (define-key vc-prefix-map [(a)] 'my-vc-git-add)
-;;(define-key vc-dir-mode-map [(a)] 'my-vc-git-add)
+(define-key vc-dir-mode-map [(a)] 'my-vc-git-add)
 (define-key vc-prefix-map [(u)] 'my-vc-git-reset)
-;;(define-key vc-dir-mode-map [(u)] 'my-vc-git-reset)
+(define-key vc-dir-mode-map [(u)] 'my-vc-git-reset)
 ;; hide up to date files after refreshing in vc-dir
-;;(define-key vc-dir-mode-map [(g)]
-;;  (lambda () (interactive) (vc-dir-refresh) (vc-dir-hide-up-to-date)))
+(define-key vc-dir-mode-map [(g)]
+  (lambda () (interactive) (vc-dir-refresh) (vc-dir-hide-up-to-date)))
 
 
 ;; (custom-set-variables
