@@ -43,6 +43,9 @@
 ;; transient-mark-mode changes many command to use only selected region when mark active
 (setq transient-mark-mode t)
 
+;; Use utf8 by default
+(set-language-environment "UTF-8")
+
 ;; basic editing
 (setq kill-whole-line t
       tab-width 4
@@ -51,7 +54,8 @@
       delete-selection-mode 1   ;; delete the sel with a keyp
       require-final-newline t   ;; end files with a newline
       case-fold-search t        ;; ignore case when search interactively in lower case
-      shift-select-mode nil)    ;; disable shift+arrow select (as these keys needed by windmove/org mode)
+      shift-select-mode nil     ;; disable shift+arrow select (as these keys needed by windmove/org mode)
+      indent-tabs-mode nil)     ;; use only spaces for indentation
 
 ;; setup look&feel
 ;; use -mm switch to start Emacs in fullscreen mode
@@ -107,6 +111,12 @@
 
 ;; Lang/mode specific settings
 
+(defun untabify-on-save-hook ()
+  "Hook to unabify buffer before saving. Add to specific major modes."
+  (add-hook 'write-contents-functions (lambda () (untabify (point-min) (point-max)) nil))
+  nil
+)
+
 ;; Org mode
 (global-set-key (kbd "C-c a") 'org-agenda)
 (setq org-hierarchical-todo-statistics t)
@@ -117,15 +127,19 @@
 
 ;; Julia mode
 (require 'julia-mode)
+(add-hook 'julia-mode-hook 'untabify-on-save-hook)
 ;;(setq auto-mode-alist (append '(("\\.jl$"  . julia-mode)) auto-mode-alist ))
 
 ;; C/C++ mode
-(setq c-basic-offset 4 ;; set default tab offset to 4 to all C-realted modes
+(setq c-basic-offset 4 ;; set default tab offset to 4 to all C-related modes
       c-default-style (quote ((c-mode . "stroustrup") 
 			      (c++-mode . "stroustrup") 
 			      (other . "stroustrup")))
       c-style-variables-are-local-p nil ;; make c-style related variables global
       c-syntactic-indentation t)
+
+(add-hook 'c-mode-common-hook 'untabify-on-save-hook)
+
 ;;  '(c-tab-always-indent nil)
 
 
