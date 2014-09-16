@@ -152,6 +152,7 @@
   (my-vc-git-command "Unstaged"
     (lambda (files) (vc-git-command nil 0 files "reset" "-q" "--"))))
 
+
 (define-key vc-prefix-map [(r)] 'vc-revert-buffer)
 (define-key vc-dir-mode-map [(r)] 'vc-revert-buffer)
 (define-key vc-prefix-map [(a)] 'my-vc-git-add)
