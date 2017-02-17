@@ -42,6 +42,9 @@
 ;; general settings
 ;; transient-mark-mode changes many command to use only selected region when mark active
 (setq transient-mark-mode t)
+;; disable any beeps. To select what should ring and what not, see 
+;; http://stackoverflow.com/questions/11679700/emacs-disable-beep-when-trying-to-move-beyond-the-end-of-the-document
+(setq ring-bell-function 'ignore)
 
 ;; Use utf8 by default
 (set-language-environment "UTF-8")
@@ -283,3 +286,9 @@
  '(size-indication-mode t)
  '(tool-bar-mode nil))
 (put 'dired-find-alternate-file 'disabled nil)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 98 :width normal :foundry "PfEd" :family "DejaVu Sans Mono")))))
