@@ -11,6 +11,7 @@
 ;;    yasnippet
 (package-initialize)
 
+;;================================================================
 
 ;; paths
 ;; On Win7 "~" == "C:\Users\<username>\AppData\Roaming"
@@ -34,6 +35,8 @@
       delete-old-versions t)
 (setq auto-save-list-file-prefix (expand-file-name ".saves-" (expand-file-name "auto-save-list" cache-path)))
 
+;;================================================================
+
 ;; persistence
 ;; open files, positions, history
 (require 'desktop)
@@ -47,7 +50,7 @@
 				      tags-table-list
 				      search-ring
 				      register-alist
-				      command-history
+				      extended-command-history
 				      regexp-search-ring
 				      file-name-history)))
 ;; window geometry http://www.gentei.org/~yuuji/software/revive.el
@@ -58,6 +61,8 @@
 (add-hook 'kill-emacs-hook  (lambda() (save-current-configuration 1)))
 (add-hook 'after-init-hook  (lambda() (resume 1)))
 
+;;================================================================
+
 ;; general settings
 ;; transient-mark-mode changes many command to use only selected region when mark active
 (setq transient-mark-mode t)
@@ -65,8 +70,13 @@
 ;; http://stackoverflow.com/questions/11679700/emacs-disable-beep-when-trying-to-move-beyond-the-end-of-the-document
 (setq ring-bell-function 'ignore)
 
-;; Use utf8 by default
-(set-language-environment "UTF-8")
+(setq column-number-mode t)
+(setq display-time-mode t)
+(setq size-indication-mode t)
+(setq tool-bar-mode nil)
+(put 'dired-find-alternate-file 'disabled nil)
+
+;;================================================================
 
 ;; basic editing
 (setq kill-whole-line t
@@ -78,6 +88,22 @@
       case-fold-search t        ;; ignore case when search interactively in lower case
       shift-select-mode nil     ;; disable shift+arrow select (as these keys needed by windmove/org mode)
       indent-tabs-mode nil)     ;; use only spaces for indentation
+
+;; Use utf8 by default
+(set-language-environment "UTF-8")
+
+;; useful keyboard shortcuts
+(global-set-key "\M-\C-r" 'query-replace)
+(global-set-key "\M-r" 'replace-string)
+(global-set-key "\M-g" 'goto-line)
+(global-set-key (kbd "C-c M-q") 'auto-fill-mode) ;; TODO - change to my-auto-fill-mode
+;; Treat 'y' or 'RET' as yes, 'n' as no.
+(fset 'yes-or-no-p 'y-or-n-p)
+(define-key query-replace-map [return] 'act)
+;; Since windmove doesn't work well with org-mode, define easy button for window switch.
+(global-set-key   [f1]   'other-window)
+
+;;================================================================
 
 ;; setup look&feel
 ;; use -mm switch to start Emacs in fullscreen mode
@@ -106,8 +132,6 @@
      ;; If there is more than one, they won't work right.
      '(default ((t (:family "Courier New" :foundry "outline" :slant normal :weight normal :height 120 :width normal))))))
 
-
-
 ;; use dark gray italic for comments 
 (set-face-attribute font-lock-comment-face nil :slant 'italic :foreground "dimgray")
  ;; max decoration for all modes, rarely affect anything
@@ -118,17 +142,7 @@
 ;(defun my-auto-fill-mode (&optional arg) (auto-fill-mode arg) (fci-mode arg))
 ;(defun my-auto-fill-mode() (auto-fill-mode) (fci-mode))
 
-;; useful keyboard shortcuts
-(global-set-key "\M-\C-r" 'query-replace)
-(global-set-key "\M-r" 'replace-string)
-(global-set-key "\M-g" 'goto-line)
-(global-set-key (kbd "C-c M-q") 'auto-fill-mode) ;; TODO - change to my-auto-fill-mode
-;; Treat 'y' or 'RET' as yes, 'n' as no.
-(fset 'yes-or-no-p 'y-or-n-p)
-(define-key query-replace-map [return] 'act)
-;; Since windmove doesn't work well with org-mode, define easy button for window switch.
-(global-set-key   [f1]   'other-window)
-
+;;================================================================
 
 
 ;; Lang/mode specific settings
@@ -146,6 +160,14 @@
 (add-hook 'org-mode-hook 'auto-fill-mode) ; TODO replace with my-auto-fill-mode
 (add-hook 'org-mode-hook 'fci-mode)
 
+;; Shell mode
+(require 'dirtrack)
+(add-hook 'shell-mode-hook
+      (lambda ()
+        (shell-dirtrack-mode 0) ;stop the usual shell-dirtrack mode
+	(setq dirtrack-list '("^.*:\\(.*\\)[$|#]" 1))
+        ;(dirtrack-debug-mode) ;this shows any change in directory that dirtrack mode sees
+        (dirtrack-mode 1)))
 
 ;; Julia mode
 (require 'julia-mode)
@@ -202,36 +224,9 @@
   (lambda () (interactive) (vc-dir-refresh) (vc-dir-hide-up-to-date)))
 
 
-;; (custom-set-variables
-;;   ;; custom-set-variables was added by Custom.
-;;   ;; If you edit it by hand, you could mess it up, so be careful.
-;;   ;; Your init file should contain only one such instance.
-;;   ;; If there is more than one, they won't work right.
-;;  '(cperl-continued-statement-offset 4)
-;;  '(cperl-indent-level 4)
-;;  '(current-language-environment "UTF-8")
-;;  '(custom-buffer-indent 4)
-;;  '(fill-individual-varying-indent t)
-;;  '(global-font-lock-mode t nil (font-lock))
-;;  '(hi-lock-mode t t (hi-lock))
-;;  '(indent-tabs-mode nil)
-
-;;  '(lisp-tag-body-indentation 4)
-;;  '(mail-indentation-spaces 4)
-;;  '(normal-erase-is-backspace t)
-;;  '(octave-auto-indent nil)
-;;  '(octave-block-offset 4)
-;;  '(parse-sexp-ignore-comments t)
-;;  '(save-place t nil (saveplace))
-;;  '(tab-always-indent nil)
-;;  '(tab-stop-list (quote (4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80 84 88 92 96 100)))
-;;  '
-
-;;  '(x-select-enable-clipboard t))
 
 
-;; 
-;; 
+; 
 ;; ;
 ;; (add-hook 'c-mode-hook 'turn-on-font-lock)
 ;; (setq shift-select-mode nil)
@@ -249,15 +244,6 @@
 
 ;; ; packages setup
 ;; (require 'org-inlinetask)
-
-;; (windmove-default-keybindings)
-;; ;; Make windmove work in org-mode:
-;; (add-hook 'org-shiftup-final-hook 'windmove-up)
-;; (add-hook 'org-shiftleft-final-hook 'windmove-left)
-;; (add-hook 'org-shiftdown-final-hook 'windmove-down)
-;; (add-hook 'org-shiftright-final-hook 'windmove-right)
-
-;; 
 
 
 ;; ; -- language specs --
@@ -295,16 +281,7 @@
 ;(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
 ;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
 ;(add-hook 'haskell-mode-hook 'turn-on-haskell-hugs)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(column-number-mode t)
- '(display-time-mode t)
- '(size-indication-mode t)
- '(tool-bar-mode nil))
-(put 'dired-find-alternate-file 'disabled nil)
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
