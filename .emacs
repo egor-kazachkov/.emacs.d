@@ -80,28 +80,36 @@
 
 ;; basic editing
 (setq kill-whole-line t
-      tab-width 4
       fill-column 92            ;; wrap lines after column 92 ;; TODO: Doesn't work - fix it
       auto-fill-mode t          ;; always turn on auto-fill mode
+      global-mark-ring-max 5000 ;; increase mark ring to contains 5000 entries
+      mark-ring-max 5000        ;; increase kill ring to contains 5000 entries
+      kill-ring-max 5000        ;; increase kill-ring capacity
       delete-selection-mode 1   ;; delete the sel with a keyp
       require-final-newline t   ;; end files with a newline
       case-fold-search t        ;; ignore case when search interactively in lower case
       shift-select-mode nil     ;; disable shift+arrow select (as these keys needed by windmove/org mode)
       indent-tabs-mode nil)     ;; use only spaces for indentation
 
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+
 ;; Use utf8 by default
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
 (set-language-environment "UTF-8")
+(prefer-coding-system 'utf-8)
 
 ;; useful keyboard shortcuts
 (global-set-key "\M-\C-r" 'query-replace)
 (global-set-key "\M-r" 'replace-string)
 (global-set-key "\M-g" 'goto-line)
 (global-set-key (kbd "C-c M-q") 'auto-fill-mode) ;; TODO - change to my-auto-fill-mode
-;; Treat 'y' or 'RET' as yes, 'n' as no.
-(fset 'yes-or-no-p 'y-or-n-p)
+(global-set-key (kbd "RET") 'newline-and-indent)
+(global-set-key [f1]   'other-window) ;; easy button for window switch.
+
+(fset 'yes-or-no-p 'y-or-n-p) ;; Treat 'y' or 'RET' as yes, 'n' as no.
 (define-key query-replace-map [return] 'act)
-;; Since windmove doesn't work well with org-mode, define easy button for window switch.
-(global-set-key   [f1]   'other-window)
 
 ;;================================================================
 
@@ -224,7 +232,21 @@
   (lambda () (interactive) (vc-dir-refresh) (vc-dir-hide-up-to-date)))
 
 
-
+;; show important whitespace in diff-mode
+(add-hook 'diff-mode-hook
+	  (lambda ()
+	    (setq-local whitespace-style
+			'(face
+			  tabs
+			  tab-mark
+			  spaces
+			  space-mark
+			  trailing
+			  indentation::space
+			  indentation::tab
+			  newline
+			  newline-mark))
+	    (whitespace-mode 1)))
 
 ; 
 ;; ;
