@@ -1,3 +1,17 @@
+;; packages
+(require 'package)
+(add-to-list 'package-archives
+	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
+;; melpa archive could be used to install following packages with M-x list-package
+;;  mark package to install (i), delete (d); execute install/delete (x)
+;; Packages to install:
+;;
+;;    volatile-highlights
+;;    undo-tree
+;;    yasnippet
+(package-initialize)
+
+
 ;; paths
 ;; On Win7 "~" == "C:\Users\<username>\AppData\Roaming"
 (defvar emacs-d-path (expand-file-name ".emacs.d" "~"))
@@ -29,8 +43,13 @@
       desktop-dirname cache-path
       desktop-path (cons cache-path nil)
       history-length 256)
-(setq desktop-globals-to-save (quote (tags-file-name tags-table-list search-ring
-   regexp-search-ring file-name-history)))
+(setq desktop-globals-to-save (quote (tags-file-name
+				      tags-table-list
+				      search-ring
+				      register-alist
+				      command-history
+				      regexp-search-ring
+				      file-name-history)))
 ;; window geometry http://www.gentei.org/~yuuji/software/revive.el
 (require 'revive)
 (autoload 'save-current-configuration "revive" "Save status" t)
