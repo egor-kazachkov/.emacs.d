@@ -11,6 +11,9 @@
 ;;    yasnippet
 (package-initialize)
 
+(require 'volatile-highlights)
+(volatile-highlights-mode t)
+
 ;;================================================================
 
 ;; paths
