@@ -8,11 +8,14 @@
 ;;
 ;;    volatile-highlights
 ;;    undo-tree
-;;    yasnippet
+;;    
 (package-initialize)
 
 (require 'volatile-highlights)
 (volatile-highlights-mode t)
+
+(require 'undo-tree)
+(global-undo-tree-mode)
 
 ;;================================================================
 
