@@ -82,6 +82,9 @@
 (setq tool-bar-mode nil)
 (put 'dired-find-alternate-file 'disabled nil)
 
+;; update any change made on file to the current buffer
+(global-auto-revert-mode)
+
 ;;================================================================
 
 ;; basic editing
@@ -105,6 +108,8 @@
 (set-keyboard-coding-system 'utf-8)
 (set-language-environment "UTF-8")
 (prefer-coding-system 'utf-8)
+
+
 
 ;; useful keyboard shortcuts
 (global-set-key "\M-\C-r" 'query-replace)
@@ -166,6 +171,9 @@
   (add-hook 'write-contents-functions (lambda () (untabify (point-min) (point-max)) nil))
   nil
 )
+
+;; All prog modes
+(add-hook 'prog-mode-hook (lambda () (interactive) (setq show-trailing-whitespace 1)))
 
 ;; Org mode
 (global-set-key (kbd "C-c a") 'org-agenda)
