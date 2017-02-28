@@ -197,6 +197,10 @@
 
 ;;  '(c-tab-always-indent nil)
 
+;; Python mode
+(setq auto-mode-alist (append '(("\\.parts$"  . python-mode)) auto-mode-alist))
+(setq auto-mode-alist (append '(("SConstruct"  . python-mode)) auto-mode-alist))
+
 
 ;; Git extensions for vc-git, from http://snarfed.org/emacs-vc-git-tweaks
 ;; In vc-git and vc-dir for git buffers, 
