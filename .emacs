@@ -21,13 +21,19 @@
 (global-undo-tree-mode)
 
 (require 'projectile)
-(projectile-mode)
-
-;;================================================================
+(projectile-global-mode)
 
 (require 'helm)
 (require 'helm-config)
 
+;;================================================================
+
+;; helm-projectile settings
+(setq projectile-completion-system 'helm)
+(helm-projectile-on)
+(setq projectile-switch-project-action 'helm-projectile)
+
+;; Helm settings
 ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
 ;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
 ;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
@@ -77,7 +83,8 @@
 ;; keep all custom code under ~/.emacs.d/elisp
 (setq load-path (cons (expand-file-name "elisp" emacs-d-path) load-path))
 
-(defvar cache-path (expand-file-name "cache" emacs-d-path))
+;; (defvar cache-path (expand-file-name "cache" emacs-d-path))
+(defvar cache-path "/home/work/.emacs-cache")
 (unless (file-exists-p cache-path) (make-directory cache-path))
 
 ;; backups & auto-save
@@ -161,7 +168,6 @@
 (prefer-coding-system 'utf-8)
 
 
-
 ;; useful keyboard shortcuts
 (global-set-key "\M-\C-r" 'query-replace)
 (global-set-key "\M-r" 'replace-string)
@@ -169,6 +175,7 @@
 (global-set-key (kbd "C-c M-q") 'auto-fill-mode) ;; TODO - change to my-auto-fill-mode
 (global-set-key (kbd "RET") 'newline-and-indent)
 (global-set-key [f1]   'other-window) ;; easy button for window switch.
+(global-set-key (kbd "C-x C-f") 'helm-find-files)
 
 (fset 'yes-or-no-p 'y-or-n-p) ;; Treat 'y' or 'RET' as yes, 'n' as no.
 (define-key query-replace-map [return] 'act)
