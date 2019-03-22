@@ -11,6 +11,11 @@
 ;;    projectile
 ;;    helm
 ;;    helm-projectile
+;;    helm-gtags
+;;    realgud
+;;    rust-mode
+;;    cargo
+
 
 (package-initialize)
 
@@ -25,6 +30,15 @@
 
 (require 'helm)
 (require 'helm-config)
+
+;;(require 'helm-gtags)
+
+(require 'company)
+
+(require 'rust-mode)
+(require 'cargo)
+
+(require 'realgud)
 
 ;;================================================================
 
@@ -73,6 +87,23 @@
 (helm-autoresize-mode 1)
 
 (helm-mode 1)
+
+;; helm-gtags settings
+;;(setq helm-gtags-path-style 'relative)
+;;(setq helm-gtags-ignore-case t)
+;;(setq helm-gtags-auto-update t)
+;; key bindings for helm-gtags
+;;(setq helm-gtags-prefix-key "\C-t")
+;;(setq helm-gtags-suggested-key-mapping t)
+;;(add-hook 'c-mode-hook 'helm-gtags-mode)
+;;(add-hook 'c++-mode-hook 'helm-gtags-mode)
+;;(add-hook 'asm-mode-hook 'helm-gtags-mode)
+
+;;================================================================
+
+;; setting company
+(add-hook 'after-init-hook 'global-company-mode)
+(setq company-backends '((company-dabbrev-code company-gtags)))
 
 ;;================================================================
 
@@ -130,7 +161,7 @@
 ;; general settings
 ;; transient-mark-mode changes many command to use only selected region when mark active
 (setq transient-mark-mode t)
-;; disable any beeps. To select what should ring and what not, see 
+;; disable any beeps. To select what should ring and what not, see
 ;; http://stackoverflow.com/questions/11679700/emacs-disable-beep-when-trying-to-move-beyond-the-end-of-the-document
 (setq ring-bell-function 'ignore)
 
@@ -171,7 +202,8 @@
 ;; useful keyboard shortcuts
 (global-set-key "\M-\C-r" 'query-replace)
 (global-set-key "\M-r" 'replace-string)
-(global-set-key "\M-g" 'goto-line)
+;; Don't need this one, goto-line is M-g g and there are other useful commands starting with M-g
+;;(global-set-key "\M-g" 'goto-line)
 (global-set-key (kbd "C-c M-q") 'auto-fill-mode) ;; TODO - change to my-auto-fill-mode
 (global-set-key (kbd "RET") 'newline-and-indent)
 (global-set-key [f1]   'other-window) ;; easy button for window switch.
@@ -186,7 +218,7 @@
 ;; use -mm switch to start Emacs in fullscreen mode
 (setq display-time-24hr-format t)
 (display-time)
-(tool-bar-mode -1)            ;; turn-off toolbar 
+(tool-bar-mode -1)            ;; turn-off toolbar
 (setq inhibit-startup-screen t   ;; turn-off welcome screen
       column-number-mode t
       size-indication-mode t)
@@ -230,8 +262,11 @@
   nil
 )
 
-;; All prog modes
+;; All or several prog modes
 (add-hook 'prog-mode-hook (lambda () (interactive) (setq show-trailing-whitespace 1)))
+
+;; realgud debug mode
+(setq realgud-safe-mode nil)
 
 ;; Org mode
 (global-set-key (kbd "C-c a") 'org-agenda)
@@ -386,4 +421,12 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 98 :width normal :foundry "PfEd" :family "DejaVu Sans Mono")))))
+ '(default ((t (:family "Ubuntu Mono" :foundry "unknown" :slant normal :weight normal :height 120 :width normal)))))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (company helm-gtags realgud yasnippet volatile-highlights undo-tree helm-projectile cargo))))
